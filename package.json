@@ -3,7 +3,6 @@
 	"version": "0.0.1",
 	"description": "API for Tonnel gift",
 	"main": "dist/server.js",
-	"type": "module",
 	"scripts": {
 		"dev": "tsx watch src/server.ts",
 		"build": "tsc",
