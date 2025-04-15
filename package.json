@@ -1,0 +1,15 @@
+{
+	"name": "tonnel-api",
+	"version": "0.0.1",
+	"description": "API for Tonnel gift",
+	"main": "src/server.js",
+	"type": "module",
+	"scripts": {
+		"start": "node src/server.js"
+	},
+	"dependencies": {
+		"express": "^4.21.2",
+		"node-fetch": "^3.3.2",
+		"dotenv": "^16.4.7"
+	}
+}
