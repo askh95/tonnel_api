@@ -1,7 +1,11 @@
-import { fetchGiftsDirectlyFromTonnel } from "./lib/api-client.js";
-import { cleanGiftData } from "./lib/utils.js";
+import { fetchGiftsDirectlyFromTonnel } from "./lib/api-client";
+import { cleanGiftData } from "./lib/utils";
+import { GiftFilters, GiftResponse, Gift } from "./types";
 
-async function fetchDirectFromApi(giftNameWithPossibleNum, filters = {}) {
+async function fetchDirectFromApi(
+	giftNameWithPossibleNum: string,
+	filters: GiftFilters = {}
+): Promise<GiftResponse | null> {
 	try {
 		const giftNumMatch = giftNameWithPossibleNum.match(/^(.+)-(\d+)$/);
 		let giftName = giftNameWithPossibleNum;
@@ -25,7 +29,7 @@ async function fetchDirectFromApi(giftNameWithPossibleNum, filters = {}) {
 
 		const cleanedGifts = cleanGiftData(gifts);
 
-		const enhancedGifts = cleanedGifts.map((gift) => {
+		const enhancedGifts: Gift[] = cleanedGifts.map((gift) => {
 			const normalizedName = giftName.replace(/\s+/g, "").toLowerCase();
 			const animationUrl = `https://nft.fragment.com/gift/${normalizedName}-${gift.gift_num}.lottie.json`;
 			const tgsUrl = `https://nft.fragment.com/gift/${normalizedName}-${gift.gift_num}.tgs`;
@@ -43,7 +47,7 @@ async function fetchDirectFromApi(giftNameWithPossibleNum, filters = {}) {
 			gift_name: giftName,
 			filters: filters,
 		};
-	} catch (error) {
+	} catch (error: any) {
 		console.error(`Error in API fetch: ${error.message}`);
 		return null;
 	}

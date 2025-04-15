@@ -1,3 +1,5 @@
+import { TonnelApiRequestBody, GiftFilters } from "../types";
+
 const PAGE_LIMIT = 100;
 
 const API_HEADERS = {
@@ -11,7 +13,10 @@ const API_HEADERS = {
 
 export { API_HEADERS };
 
-async function fetchFromTonnel(body, retryCount = 0) {
+async function fetchFromTonnel(
+	body: TonnelApiRequestBody,
+	retryCount = 0
+): Promise<any[]> {
 	try {
 		const response = await fetch(
 			"https://gifts2.tonnel.network/api/pageGifts",
@@ -35,16 +40,16 @@ async function fetchFromTonnel(body, retryCount = 0) {
 }
 
 export async function fetchGiftsDirectlyFromTonnel(
-	giftName,
-	filters = {},
-	specificGiftNum = null
-) {
-	let allGifts = [];
+	giftName: string,
+	filters: GiftFilters = {},
+	specificGiftNum: number | null = null
+): Promise<any[]> {
+	let allGifts: any[] = [];
 	let page = 1;
 	let hasMorePages = true;
 	const foundSpecificGift = false;
 
-	const filterObj = {
+	const filterObj: Record<string, any> = {
 		price: { $exists: true },
 		refunded: { $ne: true },
 		buyer: { $exists: false },
@@ -60,7 +65,7 @@ export async function fetchGiftsDirectlyFromTonnel(
 		filterObj.symbol = { $regex: filters.symbol, $options: "i" };
 	if (filters.giftNum) filterObj.gift_num = filters.giftNum;
 
-	let priceRange = null;
+	let priceRange: [number, number] | null = null;
 	if (filters.priceRange && filters.priceRange.length === 2) {
 		const [minPrice, maxPrice] = filters.priceRange;
 		if (!Number.isNaN(minPrice) && !Number.isNaN(maxPrice)) {
@@ -68,7 +73,7 @@ export async function fetchGiftsDirectlyFromTonnel(
 		}
 	}
 
-	let sortObj = { price: 1, gift_id: -1 };
+	let sortObj: Record<string, number> = { price: 1, gift_id: -1 };
 	if (specificGiftNum !== null || filters.giftNum) {
 		sortObj = { gift_num: 1, price: 1 };
 	}
@@ -77,7 +82,7 @@ export async function fetchGiftsDirectlyFromTonnel(
 		process.stdout.write(".");
 
 		try {
-			const body = {
+			const body: TonnelApiRequestBody = {
 				page,
 				limit: PAGE_LIMIT,
 				sort: JSON.stringify(sortObj),
@@ -102,7 +107,7 @@ export async function fetchGiftsDirectlyFromTonnel(
 			}
 
 			await new Promise((resolve) => setTimeout(resolve, 300));
-		} catch (error) {
+		} catch (error: any) {
 			console.error(`Error fetching from Tonnel API: ${error.message}`);
 			hasMorePages = false;
 		}
